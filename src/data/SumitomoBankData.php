@@ -1,8 +1,8 @@
 <?php
 
-namespace Parser\Format;
+namespace Data;
 
-class SumitomoBankFormat implements ParserFormatInterface
+class SumitomoBankData implements DataInterface
 {
     // Note; 
     // this format could be as well categorized by country

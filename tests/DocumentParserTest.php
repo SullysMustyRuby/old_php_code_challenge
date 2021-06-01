@@ -3,15 +3,15 @@
 declare(strict_types=1);
 
 include_once 'src/DocumentParser.php';
-include_once 'src/parser/DocumentParserInterface.php';
-include_once 'src/parser/CSVDocumentParser.php';
-include_once 'src/parser/ExcelDocumentParser.php';
-include_once 'src/parser/format/SingaporeBankFormat.php';
+include_once 'src/parser/ParserInterface.php';
+include_once 'src/parser/CSVParser.php';
+include_once 'src/parser/ExcelParser.php';
+include_once 'src/data/SingaporeBankData.php';
 
 use PHPUnit\Framework\TestCase;
-use Parser\CSVDocumentParser;
-use Parser\ExcelDocumentParser;
-use Parser\Format\SingaporeBankFormat;
+use Parser\CSVParser;
+use Parser\ExcelParser;
+use Data\SingaporeBankData;
 
 final class DocumentParserTest extends TestCase
 {
@@ -23,7 +23,8 @@ final class DocumentParserTest extends TestCase
             'message' => 'A file "tests/support/data_sample.csv" does not exist.',
         ];
 
-        $parser = new DocumentParser(new CSVDocumentParser, new SingaporeBankFormat, 'tests/support/file_is_not_here.csv');
+        $file   = __DIR__ . '/support/file_is_not_here.csv';
+        $parser = new DocumentParser(new SingaporeBankData($file), new CSVParser());
         $parser->validate();
 
         $result = $parser->report();
@@ -39,7 +40,8 @@ final class DocumentParserTest extends TestCase
             'message' => 'A file type must be Excel file.'
         ];
 
-        $parser = new DocumentParser(new ExcelDocumentParser, new SingaporeBankFormat, 'tests/support/data_sample.csv');
+        $file   = __DIR__ . '/support/data_sample.csv';
+        $parser = new DocumentParser(new SingaporeBankData($file), new ExcelParser());
         $parser->validate();
 
         $result = $parser->report();
@@ -47,17 +49,36 @@ final class DocumentParserTest extends TestCase
         $this->assertEquals($expected_return, $result);
     }
 
-    public function testTerminatesTheProcessIfFileFormatIsWrong(): void
+    public function testTerminatesTheProcessIfFileHeaderFormatIsWrong(): void
     {
         $expected_return = [
             'status'  => 'parser_invalid',
             'code'    => 'file_wrong_format',
-            'message' => 'A file format is wrong. The used format is "SingaporeBank".'
+            'message' => 'Header format is wrong.'
         ];
 
-        $parser = new DocumentParser(new CSVDocumentParser, new SingaporeBankFormat, 'tests/support/data_wrong_sample.csv');
+        $file   = __DIR__ . '/support/data_sample_broken_header.csv';
+        $parser = new DocumentParser(new SingaporeBankData($file), new CSVParser());
         $parser->validate();
-        $parser->validateFormat();
+        $parser->read();
+
+        $result = $parser->report();
+
+        $this->assertEquals($expected_return, $result);
+    }
+
+    public function testTerminatesTheProcessIfFileBodyFormatIsWrong(): void
+    {
+        $expected_return = [
+            'status'  => 'parser_invalid',
+            'code'    => 'file_wrong_format',
+            'message' => 'Content format is wrong at line 9.'
+        ];
+
+        $file   = __DIR__ . '/support/data_sample_broken_body.csv';
+        $parser = new DocumentParser(new SingaporeBankData($file), new CSVParser());
+        $parser->validate();
+        $parser->read();
 
         $result = $parser->report();
 

@@ -1,8 +1,16 @@
 <?php
+
 declare(strict_types=1);
 
-use PHPUnit\Framework\TestCase;
+include_once 'src/DocumentParser.php';
+include_once 'src/data/SingaporeBankData.php';
+include_once 'src/parser/ParserInterface.php';
+include_once 'src/parser/CSVParser.php';
 include_once 'src/FinalResult.php';
+
+use PHPUnit\Framework\TestCase;
+use Parser\CSVParser;
+use Data\SingaporeBankData;
 
 final class FinalResultTest extends TestCase
 {
@@ -18,9 +26,8 @@ final class FinalResultTest extends TestCase
      *         public function returns_the_correct_hash(): void {}
      *
      *       As the test supposed to communicate more clearly toward human
-     *       so I think this appraoch allow other developers to be able read it easier
-     *       when look at its test result.
-     *
+     *       so I think this appraoch will allow other developers to be able 
+     *       to read it easier when look at its test result.
      */
     public function testReturnsTheCorrectHash(): void
     {
@@ -54,10 +61,27 @@ final class FinalResultTest extends TestCase
             ]
         ];
 
-        $file   = new FinalResult();
-        $result = $file->results('tests/support/data_sample.csv');
-        unset($result["document"]);
+        $file   = __DIR__ . '/support/data_sample.csv';
+
+        $parser = new DocumentParser(new SingaporeBankData($file), new CSVParser);
+        $parser->validate();
+        $parser->read();
+
+        $result = new FinalResult();
+        $result = $result->result($parser);
 
         $this->assertEquals($expected_return, $result);
+
+
+        // $file   = __DIR__ . '/support/data_sample.csv';
+
+        // $parser = new DocumentParser(new CSVParser, new SingaporeBankFormat, $file);
+        // $parser->validate();
+        // $parser->read();
+
+        // $result = new FinalResult();
+        // $result = $result->result($parser);
+
+        // $this->assertEquals($expected_return, $result);
     }
 }
