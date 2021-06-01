@@ -2,12 +2,6 @@
 
 declare(strict_types=1);
 
-include_once 'src/DocumentParser.php';
-include_once 'src/data/SingaporeBankData.php';
-include_once 'src/parser/ParserInterface.php';
-include_once 'src/parser/CSVParser.php';
-include_once 'src/FinalResult.php';
-
 use PHPUnit\Framework\TestCase;
 use Parser\CSVParser;
 use Data\SingaporeBankData;
@@ -15,27 +9,31 @@ use Data\SingaporeBankData;
 final class FinalResultTest extends TestCase
 {
     /**
-     * Note; There is a couple ways of naming test case method's name.
-     *       However, as this is based on each developer preferences
-     *       and each of team's code convention, therefore I would like to
-     *       leave it as it is.
+     * Note; 
+     * There is a couple ways of naming test case method's name.
+     * However, as this is based on each developer preferences
+     * and each of team's code convention, therefore I would like to
+     * leave it as it is.
      *
-     *       My preference is to use a notation @test with English-sentence written style.
+     * My preference is to use a notation @test with English-sentence written style.
      *
-     *         @test
-     *         public function returns_the_correct_hash(): void {}
+     *   @test
+     *   public function returns_the_correct_hash(): void {}
      *
-     *       As the test supposed to communicate more clearly toward human
-     *       so I think this appraoch will allow other developers to be able 
-     *       to read it easier when look at its test result.
+     * As the test supposed to communicate more clearly toward human
+     * so I think this appraoch will allow other developers to be able 
+     * to read it easier when look at its test result.
      */
     public function testReturnsTheCorrectHash(): void
     {
-        // Note; I agree on putting this as class's property.
-        //       However, this is likely to serve only for this specific method (at the moment).
-        //       And the value seems subject to be changed in each test.
-        //       Therefore, I think removing ambiguous of "it may be reusable."
-        //       when there is no actual place that would reuse this variable, is more clearer.
+        /**
+         * Note; 
+         * I agree on putting this as class's property.
+         * However, this is likely to serve only for this specific method (at the moment).
+         * And the value seems subject to be changed in each test.
+         * Therefore, I think removing ambiguous of "it may be reusable."
+         * when there is no actual place that would reuse this variable, is more clearer.
+         */
         $expected_return = [
             "filename" => "data_sample.csv",
             "failure_code" => "100",
@@ -71,17 +69,5 @@ final class FinalResultTest extends TestCase
         $result = $result->result($parser);
 
         $this->assertEquals($expected_return, $result);
-
-
-        // $file   = __DIR__ . '/support/data_sample.csv';
-
-        // $parser = new DocumentParser(new CSVParser, new SingaporeBankFormat, $file);
-        // $parser->validate();
-        // $parser->read();
-
-        // $result = new FinalResult();
-        // $result = $result->result($parser);
-
-        // $this->assertEquals($expected_return, $result);
     }
 }

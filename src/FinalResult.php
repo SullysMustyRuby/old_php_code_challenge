@@ -1,7 +1,5 @@
 <?php
 
-use \DocumentParser;
-
 /**
  * Note;
  * Assuming that this file is part of a large application, 

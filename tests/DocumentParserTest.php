@@ -2,12 +2,6 @@
 
 declare(strict_types=1);
 
-include_once 'src/DocumentParser.php';
-include_once 'src/parser/ParserInterface.php';
-include_once 'src/parser/CSVParser.php';
-include_once 'src/parser/ExcelParser.php';
-include_once 'src/data/SingaporeBankData.php';
-
 use PHPUnit\Framework\TestCase;
 use Parser\CSVParser;
 use Parser\ExcelParser;
@@ -20,7 +14,7 @@ final class DocumentParserTest extends TestCase
         $expected_return = [
             'status'  => 'parser_invalid',
             'code'    => 'file_not_exist',
-            'message' => 'A file "tests/support/data_sample.csv" does not exist.',
+            'message' => 'A file "/var/www/html/tests/support/file_is_not_here.csv" does not exist.',
         ];
 
         $file   = __DIR__ . '/support/file_is_not_here.csv';

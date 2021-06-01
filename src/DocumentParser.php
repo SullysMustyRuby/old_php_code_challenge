@@ -42,17 +42,18 @@ class DocumentParser
         return true;
     }
 
-    public function read()
+    public function read() : bool
     {
         try {
             $this->parser->parse($this->data->file, [$this->data, 'format']);
+            return true;
         } catch (\Exception $e) {
             $this->setReportWrongFileFormat($e->getMessage());
             return false;
         }
     }
 
-    public function data()
+    public function data() : DataInterface
     {
         return $this->data;
     }
@@ -67,7 +68,7 @@ class DocumentParser
         $this->report = [
             'status'  => 'parser_invalid',
             'code'    => 'file_not_exist',
-            'message' => 'A file "tests/support/data_sample.csv" does not exist.',
+            'message' => 'A file "' . $this->data->file . '" does not exist.',
         ];
     }
 
